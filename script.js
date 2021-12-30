@@ -1,38 +1,43 @@
-
 // FIXME Assurez vous que ces deux variables contiennent bien les bonnes choses ;-)
 let player = $('.player__video').first();
 let progress = $('.progress__filled').first();
-let play = $('.player__button');
-let x = true;
 
-play.click(function (){
-    if(x === true){
-        $(this).html( "►");
-        player.get(0).play();
-        x = false;
-    }
-    else if(x === false) {
+// boutton play/pause
+let toggle = true;
+
+$(".toggle").click(function (){
+    if (toggle){
         $(this).html("⏸");
-        player.get(0).pause();
-        x = true;
+        toggle = false;
+        player.get(0).play();
     }
-})
-
-
-player.click("timeupdate", () => {
-    let progre = player.currentTime / player.duration;
-    progress.style.width = progre * 100 + "%";
+    else {
+        $(this).html("►");
+        toggle = true;
+        player.get(0).pause();
+    }
 });
 
+player.on("timeupdate", function (){
+    $("#playbackRate").attr("value", this.currentTime/this.duration);
+});
+
+//button avncer ou reculer de x seocnd
 $("button").click(function (){
     switch ($(this).attr("data-skip")){
         case "-10":
             player[0].currentTime -= 10;
-            $(this).html("« 10s");
             break;
         case "25":
             player[0].currentTime += 25;
-            $(this).html("25s »");
             break;
     }
+});
+
+$("#playbackRate").on("change", function (){
+    player[0].currentTime = document.getElementById("playbackRate").value * player[0].duration;
+});
+
+$("#volume").on("change", function (){
+    player[0].volume = this.value;
 });
